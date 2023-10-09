@@ -7,9 +7,9 @@ import schema from "./schema";
 const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event) => {
-  const { id } = event.queryStringParameters;
+  const { productId } = event.pathParameters;
 
-  if (!id) {
+  if (!productId) {
     return {
       statusCode: 400,
       body: JSON.stringify({
@@ -19,7 +19,7 @@ const getProductById: ValidatedEventAPIGatewayProxyEvent<
     };
   }
 
-  const product = products.find((p) => p.id === id);
+  const product = products.find((p) => p.id === productId);
 
   if (!product) {
     return {
