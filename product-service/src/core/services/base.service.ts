@@ -3,7 +3,7 @@ import * as AWS from "aws-sdk";
 
 export class BaseService<T> {
   protected tableName = "";
-  private client = new AWS.DynamoDB.DocumentClient();
+  protected client = new AWS.DynamoDB.DocumentClient();
 
   getById = (id: string) =>
     new Promise<ServiceResponse<T>>((resolve, _) => {
@@ -64,6 +64,31 @@ export class BaseService<T> {
             error: err,
           });
           console.error("Error scanning data list:", err);
+        }
+      });
+    });
+
+  create = (entry: T) =>
+    new Promise<ServiceResponse<T>>((resolve, _) => {
+      const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
+        TableName: this.tableName,
+        Item: entry,
+      };
+
+      this.client.put(params, (err) => {
+        if (err) {
+          resolve({
+            data: null,
+            message: "Error while creating a new entry",
+            error: err,
+            success: false,
+          });
+        } else {
+          resolve({
+            success: true,
+            data: entry,
+            message: "Entry created successfully",
+          });
         }
       });
     });

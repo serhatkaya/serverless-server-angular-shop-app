@@ -1,6 +1,8 @@
 import type { AWS } from "@serverless/typescript";
 
 import getProductById from "@functions/getProductById";
+import createProduct from "@functions/createProduct";
+
 import seedData from "@functions/seedData";
 import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME } from "src/core/util/globals";
 import { getDatabaseConfiguration } from "src/core/util/resource.util";
@@ -60,6 +62,7 @@ const serverlessConfiguration: AWS = {
     },
     getProductById,
     seedData,
+    createProduct,
   },
   package: { individually: true },
   custom: {

@@ -22,27 +22,19 @@ const getProductById: ValidatedEventAPIGatewayProxyEvent<
     };
   }
   let statusCode = 200;
-  const productResponse = await productService.getById(productId);
+  const productResponse = await productService.getByIdWithStocks(productId);
 
   if (!productResponse.success && !productResponse.error) {
     statusCode = 404;
-    // return {
-    //   statusCode: 404,
-    //   body: JSON.stringify({
-    //     message: "There is no product found with the given ID.",
-    //     data: null,
-    //   }),
-    // };
   }
   if (!productResponse.success && productResponse.error) {
     statusCode = 500;
-    // return {
-    //   statusCode: 500,
-    //   body: JSON.stringify(productResponse),
-    // };
   }
 
-  return formatJSONResponse(convertServiceResponseToRecord(productResponse), statusCode);
+  return formatJSONResponse(
+    convertServiceResponseToRecord(productResponse),
+    statusCode
+  );
 };
 
 export const main = middyfy(getProductById);
