@@ -1,4 +1,4 @@
-import { products } from "@functions/common/data";
+import { MOCK_PRODUCTS } from "src/core/common/mock-data";
 import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME } from "src/core/util/globals";
 
 const AWS = require("aws-sdk");
@@ -28,13 +28,13 @@ const seedData = () => {
 };
 
 const dataSeeder = (client) => {
-  const putRequestsProducts = products.map((product) => ({
+  const putRequestsProducts = MOCK_PRODUCTS.map((product) => ({
     PutRequest: {
       Item: { ...product },
     },
   }));
 
-  const putRequestsStocks = products.map((product) => ({
+  const putRequestsStocks = MOCK_PRODUCTS.map((product) => ({
     PutRequest: {
       Item: {
         product_id: product.id,
