@@ -1,11 +1,18 @@
-import type { AWS } from "@serverless/typescript";
-
-import getProductById from "@functions/getProductById";
 import createProduct from "@functions/createProduct";
-
+import getProductById from "@functions/getProductById";
 import seedData from "@functions/seedData";
+import type { AWS } from "@serverless/typescript";
+import * as dotenv from "dotenv";
 import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME } from "src/core/util/globals";
 import { getDatabaseConfiguration } from "src/core/util/resource.util";
+
+// load env file
+dotenv.config();
+
+const [PRODUCTS_TABLE_RESOURCE, STOCKS_TABLE_RESOURCE] = [
+  process.env.PRODUCTS_TABLE,
+  process.env.STOCKS_TABLE,
+];
 
 const serverlessConfiguration: AWS = {
   service: "product-service",
@@ -35,10 +42,7 @@ const serverlessConfiguration: AWS = {
           "dynamodb:DeleteItem",
           "dynamodb:BatchWriteItem",
         ],
-        Resource: [
-          "arn:aws:dynamodb:us-east-1:239415430731:table/products",
-          "arn:aws:dynamodb:us-east-1:239415430731:table/stocks",
-        ],
+        Resource: [PRODUCTS_TABLE_RESOURCE, STOCKS_TABLE_RESOURCE],
       },
     ],
   },
