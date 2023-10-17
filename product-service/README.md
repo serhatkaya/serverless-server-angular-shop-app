@@ -1,14 +1,15 @@
 # Notes
 
 ## Invoke params
+
     - sls invoke local --function getProductById --data '{"pathParameters": {"productId": "7567ec4b-b10c-48c5-9345-fc73c48a80a2"}}'
     - sls invoke local --function getProductById --data '{ "headers": {"Content-Type": "application/json"}'
 
+## URLS
 
-
-
-
-
+    - GET - https://oar3zwb2jg.execute-api.us-east-1.amazonaws.com/dev/products
+    - GET - https://oar3zwb2jg.execute-api.us-east-1.amazonaws.com/dev/products/{productId}
+    - POST - https://oar3zwb2jg.execute-api.us-east-1.amazonaws.com/dev/products/create
 
 # Serverless - AWS Node.js Typescript
 
