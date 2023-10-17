@@ -1,4 +1,5 @@
 import { MOCK_PRODUCTS } from "src/core/common/mock-data";
+import { cloneObject } from "src/core/util";
 import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME } from "src/core/util/globals";
 
 const AWS = require("aws-sdk");
@@ -30,7 +31,7 @@ const seedData = () => {
 const dataSeeder = (client) => {
   const putRequestsProducts = MOCK_PRODUCTS.map((product) => ({
     PutRequest: {
-      Item: { ...product },
+      Item: { ...cloneObject(product, ["count"]) },
     },
   }));
 
