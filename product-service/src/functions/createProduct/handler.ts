@@ -23,7 +23,10 @@ const createProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
     );
   }
 
-  const productResponse = await productService.createWithStocks(body);
+  const productResponse = await productService.createWithStocks({
+    ...body,
+    id: productService.getUniqueId(),
+  });
 
   if (!productResponse.success) {
     return formatJSONResponse(

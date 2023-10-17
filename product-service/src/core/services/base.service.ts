@@ -1,5 +1,6 @@
-import { ServiceResponse } from "src/core/types";
 import * as AWS from "aws-sdk";
+import { ServiceResponse } from "src/core/types";
+import { v4 as uuidv4 } from "uuid";
 
 export class BaseService<T> {
   constructor(tableName) {
@@ -9,6 +10,8 @@ export class BaseService<T> {
   protected tableName = "";
   protected client = new AWS.DynamoDB.DocumentClient();
   protected db = new AWS.DynamoDB();
+
+  getUniqueId = () => uuidv4();
 
   getById = (id: string) =>
     new Promise<ServiceResponse<T>>((resolve, _) => {
