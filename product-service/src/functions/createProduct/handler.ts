@@ -1,10 +1,10 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { ProductService } from "src/core/services/products.service";
-import schema from "./schema";
-import { convertServiceResponseToRecord } from "src/core/util/data.util";
+import { ProductService } from "src/core/services";
 import { Product } from "src/core/types";
+import { convertServiceResponseToRecord } from "src/core/util";
+import schema from "./schema";
 
 const productService = new ProductService();
 
