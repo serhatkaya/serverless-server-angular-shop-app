@@ -1,8 +1,11 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { products } from "../common/data";
+import { ProductService } from "src/core/services";
+import { convertServiceResponseToRecord } from "src/core/util";
 import schema from "./schema";
+
+const productService = new ProductService();
 
 const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
@@ -18,22 +21,20 @@ const getProductById: ValidatedEventAPIGatewayProxyEvent<
       }),
     };
   }
+  let statusCode = 200;
+  const productResponse = await productService.getByIdWithStocks(productId);
 
-  const product = products.find((p) => p.id === productId);
-
-  if (!product) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify({
-        message: "There is no product found with the given ID.",
-        data: null,
-      }),
-    };
+  if (!productResponse.success && !productResponse.error) {
+    statusCode = 404;
+  }
+  if (!productResponse.success && productResponse.error) {
+    statusCode = 500;
   }
 
-  return formatJSONResponse({
-    data: product,
-  });
+  return formatJSONResponse(
+    convertServiceResponseToRecord(productResponse),
+    statusCode
+  );
 };
 
 export const main = middyfy(getProductById);
