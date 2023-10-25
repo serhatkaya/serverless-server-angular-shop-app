@@ -7,7 +7,7 @@ import {
   getDatabaseConfiguration,
   PRODUCT_TABLE_NAME,
   STOCK_TABLE_NAME,
-} from "src/core/util";
+} from "skcore";
 
 // load env file
 dotenv.config();

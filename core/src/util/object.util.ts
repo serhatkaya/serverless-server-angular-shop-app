@@ -1,4 +1,4 @@
-export const cloneObject = (source, keysToRemove: string[] = []) => {
+export const cloneObject = (source: any, keysToRemove: string[] = []) => {
   const clonedObject = Object.assign({}, source);
 
   keysToRemove.forEach((key) => {

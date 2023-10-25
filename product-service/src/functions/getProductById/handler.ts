@@ -1,11 +1,19 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
+import * as AWS from "aws-sdk";
 import { middyfy } from "@libs/lambda";
-import { ProductService } from "src/core/services";
-import { convertServiceResponseToRecord } from "src/core/util";
+import {
+  PRODUCT_TABLE_NAME,
+  ProductService,
+  convertServiceResponseToRecord,
+} from "skcore";
 import schema from "./schema";
 
-const productService = new ProductService();
+const productService = new ProductService(
+  PRODUCT_TABLE_NAME,
+  new AWS.DynamoDB(),
+  new AWS.DynamoDB.DocumentClient()
+);
 
 const getProductById: ValidatedEventAPIGatewayProxyEvent<
   typeof schema

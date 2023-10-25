@@ -1,6 +1,9 @@
-import { MOCK_PRODUCTS } from "src/core/common/mock-data";
-import { cloneObject } from "src/core/util";
-import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME } from "src/core/util/globals";
+import {
+  MOCK_PRODUCTS,
+  PRODUCT_TABLE_NAME,
+  STOCK_TABLE_NAME,
+  cloneObject,
+} from "skcore";
 
 const AWS = require("aws-sdk");
 
