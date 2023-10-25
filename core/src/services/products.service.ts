@@ -2,20 +2,17 @@ import {
   BatchGetItemInput,
   BatchGetItemOutput,
 } from "aws-sdk/clients/dynamodb";
-import { BaseService } from "src/core/services/base.service";
-import { ServiceResponse, Stock } from "src/core/types";
-import { Product } from "src/core/types/product.i";
-import {
-  PRODUCT_TABLE_NAME,
-  STOCK_TABLE_NAME,
-  cloneObject,
-} from "src/core/util/";
+import { ServiceResponse, Stock } from "../types";
+import { Product } from "../types/product.i";
+import { PRODUCT_TABLE_NAME, STOCK_TABLE_NAME, cloneObject } from "../util/";
+import { BaseService } from "./base.service";
 import { StocksService } from "./stocks.service";
 
 export class ProductService extends BaseService<Product> {
-  stocksService = new StocksService();
-  constructor(tableName = PRODUCT_TABLE_NAME) {
-    super(tableName);
+  stocksService: StocksService;
+  constructor(tableName = PRODUCT_TABLE_NAME, db, client) {
+    super(tableName, db, client);
+    this.stocksService == new StocksService(STOCK_TABLE_NAME, db, client);
   }
 
   getByIdWithStocks = (productId: string) =>
