@@ -11,6 +11,7 @@
     - GET - https://oar3zwb2jg.execute-api.us-east-1.amazonaws.com/dev/products/{productId}
     - POST - https://oar3zwb2jg.execute-api.us-east-1.amazonaws.com/dev/products/create
 
+
 # Serverless - AWS Node.js Typescript
 
 This project has been generated using the `aws-nodejs-typescript` template from the [Serverless framework](https://www.serverless.com/).

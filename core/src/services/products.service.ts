@@ -12,7 +12,7 @@ export class ProductService extends BaseService<Product> {
   stocksService: StocksService;
   constructor(tableName = PRODUCT_TABLE_NAME, db, client) {
     super(tableName, db, client);
-    this.stocksService == new StocksService(STOCK_TABLE_NAME, db, client);
+    this.stocksService = new StocksService(STOCK_TABLE_NAME, db, client);
   }
 
   getByIdWithStocks = (productId: string) =>

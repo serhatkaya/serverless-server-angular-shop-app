@@ -1,4 +1,3 @@
-// var shell = require("shelljs");
 const { execSync } = require("child_process");
 
 [

@@ -6,12 +6,12 @@ export default {
   events: [
     {
       http: {
-        method: "post",
-        path: "products/create",
+        method: "get",
+        path: "import",
         cors: {
           origins: ["*"],
           allowCredentials: true,
-          methods: ["POST", "OPTIONS"] as RequestMethodsType,
+          methods: ["GET", "OPTIONS"] as RequestMethodsType,
         },
       },
     },
