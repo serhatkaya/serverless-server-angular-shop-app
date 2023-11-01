@@ -1,21 +1,26 @@
-import createProduct from "@functions/createProduct";
-import getProductById from "@functions/getProductById";
-import seedData from "@functions/seedData";
+import {
+  catalogBatchProcess,
+  createProduct,
+  getProductById,
+  seedData,
+} from "@functions/index";
 import type { AWS } from "@serverless/typescript";
 import * as dotenv from "dotenv";
 import {
-  getDatabaseConfiguration,
   PRODUCT_TABLE_NAME,
   STOCK_TABLE_NAME,
+  getDatabaseConfiguration,
 } from "skcore";
 
 // load env file
 dotenv.config();
 
-const [PRODUCTS_TABLE_RESOURCE, STOCKS_TABLE_RESOURCE] = [
-  process.env.PRODUCTS_TABLE,
-  process.env.STOCKS_TABLE,
-];
+const [PRODUCTS_TABLE_RESOURCE, STOCKS_TABLE_RESOURCE, PRODUCT_TOPIC_RESOURCE] =
+  [
+    process.env.PRODUCTS_TABLE,
+    process.env.STOCKS_TABLE,
+    process.env.CREATE_PRODUCT_TOPIC_ARN,
+  ];
 
 const serverlessConfiguration: AWS = {
   service: "product-service",
@@ -31,6 +36,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      CREATE_PRODUCT_TOPIC_ARN: process.env.CREATE_PRODUCT_TOPIC_ARN,
     },
     iamRoleStatements: [
       {
@@ -47,6 +53,11 @@ const serverlessConfiguration: AWS = {
           "dynamodb:BatchGetItem",
         ],
         Resource: [PRODUCTS_TABLE_RESOURCE, STOCKS_TABLE_RESOURCE],
+      },
+      {
+        Effect: "Allow",
+        Action: ["sns:Publish"],
+        Resource: [PRODUCT_TOPIC_RESOURCE],
       },
     ],
   },
@@ -71,6 +82,7 @@ const serverlessConfiguration: AWS = {
     getProductById,
     seedData,
     createProduct,
+    catalogBatchProcess,
   },
   package: { individually: true },
   custom: {
@@ -117,6 +129,29 @@ const serverlessConfiguration: AWS = {
           },
         ]
       ),
+      CatalogItemsQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "CatalogItemsQueue",
+        },
+      },
+      CreateProductTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          DisplayName: "Create Product Topic",
+          TopicName: "createProductTopic",
+        },
+      },
+      CreateProductTopicSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Protocol: "email",
+          TopicArn: {
+            Ref: "CreateProductTopic",
+          },
+          Endpoint: process.env.EMAIL_SNS,
+        },
+      },
     },
   },
 };
