@@ -4,7 +4,10 @@ import * as dotenv from "dotenv";
 
 // load env file
 dotenv.config();
-const [IMPORT_BUCKET_RESOURCE] = [process.env.IMPORT_BUCKET_ARN];
+const [IMPORT_BUCKET_RESOURCE, CATALOG_SQS_ARN] = [
+  process.env.IMPORT_BUCKET_ARN,
+  process.env.CATALOG_SQS_ARN,
+];
 
 const serverlessConfiguration: AWS = {
   service: "import-service",
@@ -21,6 +24,7 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       IMPORT_BUCKET_NAME: process.env.IMPORT_BUCKET_NAME,
+      PRODUCT_SQS_URL: process.env.PRODUCT_SQS_URL,
     },
     iamRoleStatements: [
       {
@@ -32,6 +36,16 @@ const serverlessConfiguration: AWS = {
         Effect: "Allow",
         Action: ["s3:*"],
         Resource: `${IMPORT_BUCKET_RESOURCE}/*`,
+      },
+      {
+        Effect: "Allow",
+        Action: ["s3:*"],
+        Resource: `${IMPORT_BUCKET_RESOURCE}/*`,
+      },
+      {
+        Effect: "Allow",
+        Action: ["sqs:ListQueues", "sqs:ReceiveMessage", "sqs:SendMessage"],
+        Resource: CATALOG_SQS_ARN,
       },
     ],
   },

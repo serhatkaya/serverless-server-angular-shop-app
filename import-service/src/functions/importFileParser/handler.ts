@@ -1,9 +1,11 @@
 import { S3Event, S3Handler } from "aws-lambda";
-import { S3 } from "aws-sdk";
+import AWS, { S3 } from "aws-sdk";
 import csv from "csv-parser";
+import { convertCsvProductToObject } from "skcore";
 import { Readable } from "stream";
 
 const s3 = new S3();
+const sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
 
 const importFileParser: S3Handler = async (event: S3Event) => {
   for (const record of event.Records) {
@@ -29,7 +31,24 @@ const importFileParser: S3Handler = async (event: S3Event) => {
       .pipe(csv({ headers: false, separator: "," }))
       .on("data", (data) => results.push(data))
       .on("end", () => {
-        console.log(results);
+        const mappedResults = results.map(
+          (data) => convertCsvProductToObject(data) as any
+        );
+
+        mappedResults.forEach((product) => {
+          const sqsParams = {
+            QueueUrl: process.env.PRODUCT_SQS_URL,
+            MessageBody: JSON.stringify(product),
+          };
+
+          sqs.sendMessage(sqsParams, (err, data) => {
+            if (err) {
+              console.error("Error while sending message:", err);
+            } else {
+              console.log("SQS Message sent successfully!", data);
+            }
+          });
+        });
       });
   }
 };
