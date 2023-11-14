@@ -1,6 +1,7 @@
 import { importFileParser, importProductsFile } from "@functions/index";
 import type { AWS } from "@serverless/typescript";
 import * as dotenv from "dotenv";
+import { RequestMethodsType } from "skcore";
 
 // load env file
 dotenv.config();
@@ -51,7 +52,27 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions: {
-    importProductsFile,
+    importProductsFile: {
+      ...importProductsFile,
+      events: [
+        {
+          http: {
+            method: "get",
+            path: "import",
+            cors: {
+              origins: ["*"],
+              allowCredentials: true,
+              methods: ["GET", "OPTIONS"] as RequestMethodsType,
+            },
+            authorizer: {
+              name: "basicAuthorizer",
+              arn: process.env.BASIC_AUTHORIZER_ARN,
+              resultTtlInSeconds: 0,
+            },
+          },
+        },
+      ],
+    },
     importFileParser: {
       ...importFileParser,
       events: [
